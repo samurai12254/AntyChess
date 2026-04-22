@@ -2,12 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStackedWidget>
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
+class GameWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -17,7 +14,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void startLocalGame();
+    void startBot0Game();
+    void returnToMenu();
 private:
-    Ui::MainWindow *ui;
+    QStackedWidget *m_stackedWidget;
+    GameWidget *m_gameWidget;
+    QWidget *m_menuWidget;
 };
+
 #endif // MAINWINDOW_H

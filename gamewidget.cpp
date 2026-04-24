@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QKeyEvent>
-
+using namespace std;
 GameWidget::GameWidget(QWidget *parent)
     : QWidget(parent), m_hasSelection(false)
 {
@@ -19,8 +19,10 @@ GameWidget::GameWidget(QWidget *parent)
     connect(m_boardView, &BoardView::cellClicked, this, &GameWidget::onCellClicked);
 }
 
-void GameWidget::newGame()
+void GameWidget::newGame(int type,bool player)
 {
+    type_game = type;
+    color_player = player;
     InitBoard();
     ColorNow = 0;
     m_hasSelection = false;
@@ -55,7 +57,7 @@ void GameWidget::onCellClicked(int row, int col)
 bool GameWidget::tryMakeMove(int fromRow, int fromCol, int toRow, int toCol)
 {
     if (ColorNow == 0) {
-        GenerateWMoves();
+        vector <int> WMoves = GenerateWMoves(board);
         for (int moveCode : WMoves) {
             Move m = decodeMove(moveCode);
             if (m[0] == fromRow && m[1] == fromCol && m[2] == toRow && m[3] == toCol) {
@@ -65,7 +67,7 @@ bool GameWidget::tryMakeMove(int fromRow, int fromCol, int toRow, int toCol)
             }
         }
     } else {
-        GenerateBMoves();
+        vector <int> BMoves = GenerateBMoves(board);
         for (int moveCode : BMoves) {
             Move m = decodeMove(moveCode);
             if (m[0] == fromRow && m[1] == fromCol && m[2] == toRow && m[3] == toCol) {
@@ -86,14 +88,14 @@ void GameWidget::switchTurn()
 void GameWidget::checkGameOver()
 {
     if (ColorNow == 0) {
-        GenerateWMoves();
+        vector <int> WMoves = GenerateWMoves(board);
         if (WMoves.empty()) {
             QMessageBox::information(this, "Конец игры", "Белые выиграли (у чёрных нет ходов)!");
             newGame();
             return;
         }
     } else {
-        GenerateBMoves();
+        vector <int> BMoves = GenerateBMoves(board);
         if (BMoves.empty()) {
             QMessageBox::information(this, "Конец игры", "Чёрные выиграли (у белых нет ходов)!");
             newGame();

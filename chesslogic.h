@@ -1,8 +1,7 @@
 #ifndef CHESSLOGIC_H
 #define CHESSLOGIC_H
 
-#include <vector>
-#include <array>
+#include <bits/stdc++.h>
 
 const int sz = 8;
 
@@ -22,12 +21,11 @@ void InitBoard();
 bool isWhite(int p);
 bool isBlack(int p);
 bool is_good(int i, int j);
-void GenerateWMoves();
-void GenerateBMoves();
+std::vector <int> GenerateWMoves(const int board[sz][sz]);
+std::vector <int> GenerateBMoves(const int board[sz][sz]);
 Move decodeMove(int move);
 int addMove(int fx, int fy, int tx, int ty, bool isCapture);
 
-extern std::vector<int> WMoves, BMoves;
 extern std::vector<int> moves;
 extern std::vector<int> captures;
 

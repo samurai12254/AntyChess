@@ -2,6 +2,7 @@
 #include "gamewidget.h"
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QInputDialog>
 #include <QLabel>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -55,7 +56,18 @@ void MainWindow::startLocalGame()
     // Передаём фокус игровому виджету, чтобы он сразу ловил клавиши
     m_gameWidget->setFocus();
 }
-
+void MainWindow::startBot0Game()
+{
+    QStringList colors = {"Белые", "Чёрные"};
+    bool ok;
+    QString choice = QInputDialog::getItem(this, "Выбор цвета",
+                                           "Играть за:", colors, 0, false, &ok);
+    if (!ok) return;
+    int playerColor = (choice == "Белые") ? 0 : 1;
+    m_gameWidget->newGame(0, playerColor);
+    m_stackedWidget->setCurrentWidget(m_gameWidget);
+    m_gameWidget->setFocus();
+}
 void MainWindow::returnToMenu()
 {
     m_stackedWidget->setCurrentWidget(m_menuWidget);

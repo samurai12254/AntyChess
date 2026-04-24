@@ -5,10 +5,7 @@ using namespace std;
 int board[sz][sz];
 bool ColorNow = 0;
 bool ColorUser;
-vector<int> WMoves, BMoves;
-vector<int> moves;
-vector<int> captures;
-
+vector <int> captures,moves;
 void InitBoard() {
     for(int i = 0; i < sz; i++)
         for(int j = 0; j < sz; j++)
@@ -54,7 +51,7 @@ Move decodeMove(int move) {
     return now;
 }
 
-void GenerateBMoves() {
+vector <int> GenerateBMoves(const int board[sz][sz]) {
     moves.clear(); captures.clear();
     for(int i = 0; i < sz; i++) {
         for(int j = 0; j < sz; j++) {
@@ -143,11 +140,11 @@ void GenerateBMoves() {
             }
         }
     }
-    if(!captures.empty()) BMoves = captures;
-    else BMoves = moves;
+    if(!captures.empty())return captures;
+    return moves;
 }
 
-void GenerateWMoves() {
+vector <int> GenerateWMoves(const int board[sz][sz]) {
     moves.clear(); captures.clear();
     for(int i = 0; i < sz; i++) {
         for(int j = 0; j < sz; j++) {
@@ -236,6 +233,6 @@ void GenerateWMoves() {
             }
         }
     }
-    if(!captures.empty()) WMoves = captures;
-    else WMoves = moves;
+    if(!captures.empty()) return captures;
+    return moves;
 }

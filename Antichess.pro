@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     boardview.cpp \
+    bot.cpp \
     chesslogic.cpp \
     gamewidget.cpp \
     main.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
 
 HEADERS += \
     boardview.h \
+    bot.h \
     chesslogic.h \
     gamewidget.h \
     mainwindow.h

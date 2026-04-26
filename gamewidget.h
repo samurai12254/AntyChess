@@ -29,6 +29,7 @@ private:
     void switchTurn();
     void checkGameOver();
     void SimulGame();
+    int promotePawn();
 };
 
 #endif // GAMEWIDGET_H

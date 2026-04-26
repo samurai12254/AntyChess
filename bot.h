@@ -1,6 +1,7 @@
 #ifndef BOT_H
 #define BOT_H
 #include "chesslogic.h"
+extern std::mt19937 rng;
 class bot
 {
 public:

@@ -3,7 +3,10 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QKeyEvent>
+#include <QTimer>
+#include <QInputDialog>
 using namespace std;
+using dist = uniform_int_distribution<int>;
 GameWidget::GameWidget(QWidget *parent)
     : QWidget(parent), m_hasSelection(false)
 {
@@ -28,6 +31,9 @@ void GameWidget::newGame(int type,bool player)
     m_hasSelection = false;
     m_boardView->clearSelection();
     m_boardView->updateBoard();
+    if(color_player != ColorNow){
+        QTimer::singleShot(300, this, &GameWidget::SimulGame);
+    }
 }
 
 void GameWidget::onCellClicked(int row, int col)
@@ -63,6 +69,9 @@ bool GameWidget::tryMakeMove(int fromRow, int fromCol, int toRow, int toCol)
             if (m[0] == fromRow && m[1] == fromCol && m[2] == toRow && m[3] == toCol) {
                 board[toRow][toCol] = board[fromRow][fromCol];
                 board[fromRow][fromCol] = EMPTY;
+                if(toRow == 0){
+                    board[toRow][toCol] = promotePawn();
+                }
                 return true;
             }
         }
@@ -73,6 +82,9 @@ bool GameWidget::tryMakeMove(int fromRow, int fromCol, int toRow, int toCol)
             if (m[0] == fromRow && m[1] == fromCol && m[2] == toRow && m[3] == toCol) {
                 board[toRow][toCol] = board[fromRow][fromCol];
                 board[fromRow][fromCol] = EMPTY;
+                if(toRow == 7){
+                    board[toRow][toCol] = promotePawn();
+                }
                 return true;
             }
         }
@@ -83,6 +95,9 @@ bool GameWidget::tryMakeMove(int fromRow, int fromCol, int toRow, int toCol)
 void GameWidget::switchTurn()
 {
     ColorNow = !ColorNow;
+    if(ColorNow != color_player){
+        QTimer::singleShot(300, this, &GameWidget::SimulGame);
+    }
 }
 
 void GameWidget::checkGameOver()
@@ -128,4 +143,61 @@ void GameWidget::keyPressEvent(QKeyEvent *event)
     } else {
         QWidget::keyPressEvent(event);
     }
+}
+void GameWidget::SimulGame(){
+    if(type_game == -1 || ColorNow == color_player)return;
+    if(type_game == 0){
+        int codeMove = Bot0.selectMove(board,ColorNow);
+        if(codeMove == -1){
+            checkGameOver();
+            return;
+        }
+        Move move = decodeMove(codeMove);
+        board[move[2]][move[3]] = board[move[0]][move[1]];
+        board[move[0]][move[1]] = EMPTY;
+        if(ColorNow){
+            if(board[move[2]][move[3]] == WPAWN && move[2] == 0){
+                board[move[2]][move[3]] = WPAWN + dist(1,5)(rng);
+            }
+        }else{
+            if(board[move[2]][move[3]] == BPAWN && move[2] == 7){
+                board[move[2]][move[3]] = WPAWN + dist(1,5)(rng);
+            }
+        }
+
+        ColorNow = !ColorNow;
+        m_boardView ->updateBoard();
+        checkGameOver();
+    }
+}
+int GameWidget::promotePawn(){
+    QStringList all_white = {"♕ Ферзь", "♖ Ладья", "♗ Слон", "♘ Конь","♔ Король"};
+    QStringList all_black = {"♛ Ферзь", "♜ Ладья", "♝ Слон", "♞ Конь","♚ Король"};
+    bool ok;
+    QString choice;
+    if(color_player){
+        choice = QInputDialog::getItem(this, "Превращение пешки",
+                                         "Выберите фигуру:", all_black, 0, false, &ok);
+        if (!ok || choice.isEmpty()) {
+            choice = all_black[0];
+        }
+    }else{
+        choice = QInputDialog::getItem(this, "Превращение пешки",
+                                         "Выберите фигуру:", all_white, 0, false, &ok);
+        if (!ok || choice.isEmpty()) {
+            choice = all_white[0];
+        }
+    }
+    if (color_player == 0) {
+        if (choice == all_white[0]) return WQUEEN;
+        if (choice == all_white[1]) return WROOK;
+        if (choice == all_white[2]) return WBISHOP;
+        if (choice == all_white[3]) return WKNIGHT;
+    } else {
+        if (choice == all_black[0]) return BQUEEN;
+        if (choice == all_black[1]) return BROOK;
+        if (choice == all_black[2]) return BBISHOP;
+        if (choice == all_black[3]) return BKNIGHT;
+    }
+    return 0;
 }

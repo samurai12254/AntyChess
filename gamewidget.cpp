@@ -105,14 +105,14 @@ void GameWidget::checkGameOver()
     if (ColorNow == 0) {
         vector <int> WMoves = GenerateWMoves(board);
         if (WMoves.empty()) {
-            QMessageBox::information(this, "Конец игры", "Белые выиграли (у чёрных нет ходов)!");
+            QMessageBox::information(this, "Конец игры", "Белые выиграли (у белых нет ходов)!");
             newGame();
             return;
         }
     } else {
         vector <int> BMoves = GenerateBMoves(board);
         if (BMoves.empty()) {
-            QMessageBox::information(this, "Конец игры", "Чёрные выиграли (у белых нет ходов)!");
+            QMessageBox::information(this, "Конец игры", "Чёрные выиграли (у чёрных нет ходов)!");
             newGame();
             return;
         }
@@ -155,13 +155,13 @@ void GameWidget::SimulGame(){
         Move move = decodeMove(codeMove);
         board[move[2]][move[3]] = board[move[0]][move[1]];
         board[move[0]][move[1]] = EMPTY;
-        if(ColorNow){
+        if(ColorNow == 0){
             if(board[move[2]][move[3]] == WPAWN && move[2] == 0){
                 board[move[2]][move[3]] = WPAWN + dist(1,5)(rng);
             }
         }else{
             if(board[move[2]][move[3]] == BPAWN && move[2] == 7){
-                board[move[2]][move[3]] = WPAWN + dist(1,5)(rng);
+                board[move[2]][move[3]] = BPAWN + dist(1,5)(rng);
             }
         }
 
@@ -193,11 +193,12 @@ int GameWidget::promotePawn(){
         if (choice == all_white[1]) return WROOK;
         if (choice == all_white[2]) return WBISHOP;
         if (choice == all_white[3]) return WKNIGHT;
+        return WKING;
     } else {
         if (choice == all_black[0]) return BQUEEN;
         if (choice == all_black[1]) return BROOK;
         if (choice == all_black[2]) return BBISHOP;
         if (choice == all_black[3]) return BKNIGHT;
+        return BKING;
     }
-    return 0;
 }

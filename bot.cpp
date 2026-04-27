@@ -49,7 +49,7 @@ int bot1::selectMove(const int board[sz][sz],bool color){
             localBoard[i][j] = board[i][j];
         }
     }
-    return minimax(MAXDEEP,1,color).first;
+    return minimax(MAXDEEP,0,color).first;
 }
 pair<int,int> bot1::minimax(int max_deep,bool is_mini,bool color_now){
     if(max_deep == 0){

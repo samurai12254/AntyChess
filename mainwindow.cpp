@@ -29,12 +29,17 @@ MainWindow::MainWindow(QWidget *parent)
     btnRandom->setFixedSize(200, 50);
     menuLayout->addWidget(btnRandom, 0, Qt::AlignCenter);
 
+    QPushButton *btnMedium = new QPushButton("Игра с ботом уровня 1");
+    btnMedium->setFixedSize(200, 50);
+    menuLayout->addWidget(btnMedium, 0, Qt::AlignCenter);
+
     QPushButton *btnExit = new QPushButton("Выход");
     btnExit->setFixedSize(200, 50);
     menuLayout->addWidget(btnExit, 0, Qt::AlignCenter);
     connect(btnExit, &QPushButton::clicked, this, &QMainWindow::close);
     connect(btnRandom, &QPushButton::clicked, this, &MainWindow::startBot0Game);
     connect(btnLocal, &QPushButton::clicked, this, &MainWindow::startLocalGame);
+    connect(btnMedium, &QPushButton::clicked, this, &MainWindow::startBot1Game);
 
     // Игровой виджет
     m_gameWidget = new GameWidget;
@@ -65,6 +70,18 @@ void MainWindow::startBot0Game()
     if (!ok) return;
     int playerColor = (choice == "Белые") ? 0 : 1;
     m_gameWidget->newGame(0, playerColor);
+    m_stackedWidget->setCurrentWidget(m_gameWidget);
+    m_gameWidget->setFocus();
+}
+void MainWindow::startBot1Game()
+{
+    QStringList colors = {"Белые", "Чёрные"};
+    bool ok;
+    QString choice = QInputDialog::getItem(this, "Выбор цвета",
+                                           "Играть за:", colors, 0, false, &ok);
+    if (!ok) return;
+    int playerColor = (choice == "Белые") ? 0 : 1;
+    m_gameWidget->newGame(1, playerColor);
     m_stackedWidget->setCurrentWidget(m_gameWidget);
     m_gameWidget->setFocus();
 }

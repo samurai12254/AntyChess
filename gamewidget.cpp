@@ -69,7 +69,7 @@ bool GameWidget::tryMakeMove(int fromRow, int fromCol, int toRow, int toCol)
             if (m[0] == fromRow && m[1] == fromCol && m[2] == toRow && m[3] == toCol) {
                 board[toRow][toCol] = board[fromRow][fromCol];
                 board[fromRow][fromCol] = EMPTY;
-                if(toRow == 0){
+                if(toRow == 0 && board[toRow][toCol] == WPAWN){
                     board[toRow][toCol] = promotePawn();
                 }
                 return true;
@@ -82,7 +82,7 @@ bool GameWidget::tryMakeMove(int fromRow, int fromCol, int toRow, int toCol)
             if (m[0] == fromRow && m[1] == fromCol && m[2] == toRow && m[3] == toCol) {
                 board[toRow][toCol] = board[fromRow][fromCol];
                 board[fromRow][fromCol] = EMPTY;
-                if(toRow == 7){
+                if(toRow == 7 && board[toRow][toCol] == BPAWN){
                     board[toRow][toCol] = promotePawn();
                 }
                 return true;
@@ -165,6 +165,27 @@ void GameWidget::SimulGame(){
             }
         }
 
+        ColorNow = !ColorNow;
+        m_boardView ->updateBoard();
+        checkGameOver();
+    }else if(type_game == 1){
+        int codeMove = Bot1.selectMove(board,ColorNow);
+        if(codeMove == -1){
+            checkGameOver();
+            return;
+        }
+        Move move = decodeMove(codeMove);
+        board[move[2]][move[3]] = board[move[0]][move[1]];
+        board[move[0]][move[1]] = EMPTY;
+        if(ColorNow == 0){
+            if(board[move[2]][move[3]] == WPAWN && move[2] == 0){
+                board[move[2]][move[3]] = WPAWN + dist(1,5)(rng);
+            }
+        }else{
+            if(board[move[2]][move[3]] == BPAWN && move[2] == 7){
+                board[move[2]][move[3]] = BPAWN + dist(1,5)(rng);
+            }
+        }
         ColorNow = !ColorNow;
         m_boardView ->updateBoard();
         checkGameOver();

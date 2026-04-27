@@ -28,5 +28,4 @@ int addMove(int fx, int fy, int tx, int ty, bool isCapture);
 
 extern std::vector<int> moves;
 extern std::vector<int> captures;
-
 #endif // CHESSLOGIC_H

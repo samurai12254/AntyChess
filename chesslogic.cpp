@@ -6,6 +6,7 @@ int board[sz][sz];
 bool ColorNow = 0;
 bool ColorUser;
 vector <int> captures,moves;
+
 void InitBoard() {
     for(int i = 0; i < sz; i++)
         for(int j = 0; j < sz; j++)

@@ -106,14 +106,14 @@ void GameWidget::checkGameOver()
         vector <int> WMoves = GenerateWMoves(board);
         if (WMoves.empty()) {
             QMessageBox::information(this, "Конец игры", "Белые выиграли (у белых нет ходов)!");
-            newGame();
+            newGame(type_game,color_player);
             return;
         }
     } else {
         vector <int> BMoves = GenerateBMoves(board);
         if (BMoves.empty()) {
             QMessageBox::information(this, "Конец игры", "Чёрные выиграли (у чёрных нет ходов)!");
-            newGame();
+            newGame(type_game,color_player);
             return;
         }
     }

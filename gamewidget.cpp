@@ -16,7 +16,6 @@ GameWidget::GameWidget(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    // Чтобы виджет мог принимать клавиатурные события
     setFocusPolicy(Qt::StrongFocus);
 
     connect(m_boardView, &BoardView::cellClicked, this, &GameWidget::onCellClicked);
@@ -31,7 +30,8 @@ void GameWidget::newGame(int type,bool player)
     m_hasSelection = false;
     m_boardView->clearSelection();
     m_boardView->updateBoard();
-    if(color_player != ColorNow){
+    if(color_player != ColorNow || type_game == 3){
+        cout << "kok";
         QTimer::singleShot(300, this, &GameWidget::SimulGame);
     }
 }
@@ -145,7 +145,7 @@ void GameWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 void GameWidget::SimulGame(){
-    if(type_game == -1 || ColorNow == color_player)return;
+    if(type_game == -1 || (ColorNow == color_player && type_game != 3))return;
     if(type_game == 0){
         int codeMove = Bot0.selectMove(board,ColorNow);
         if(codeMove == -1){
@@ -189,7 +189,7 @@ void GameWidget::SimulGame(){
         ColorNow = !ColorNow;
         m_boardView ->updateBoard();
         checkGameOver();
-    }else{
+    }else if(type_game == 2){
         int codeMove = Bot2.selectMove(board,ColorNow);
         if(codeMove == -1){
             checkGameOver();
@@ -210,6 +210,33 @@ void GameWidget::SimulGame(){
         ColorNow = !ColorNow;
         m_boardView ->updateBoard();
         checkGameOver();
+    }else{
+        int codeMove;
+        if(ColorNow == 0){
+            codeMove = Bot2.selectMove(board,ColorNow);
+        }else{
+            codeMove = Bot1.selectMove(board,ColorNow);
+        }
+        if(codeMove == -1){
+            checkGameOver();
+            return;
+        }
+        Move move = decodeMove(codeMove);
+        board[move[2]][move[3]] = board[move[0]][move[1]];
+        board[move[0]][move[1]] = EMPTY;
+        if(ColorNow == 0){
+            if(board[move[2]][move[3]] == WPAWN && move[2] == 0){
+                board[move[2]][move[3]] = WPAWN + dist(1,5)(rng);
+            }
+        }else{
+            if(board[move[2]][move[3]] == BPAWN && move[2] == 7){
+                board[move[2]][move[3]] = BPAWN + dist(1,5)(rng);
+            }
+        }
+        ColorNow = !ColorNow;
+        m_boardView ->updateBoard();
+        checkGameOver();
+        QTimer::singleShot(300, this, &GameWidget::SimulGame);
     }
 }
 int GameWidget::promotePawn(){

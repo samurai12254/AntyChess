@@ -37,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent)
     btnHard->setFixedSize(200, 50);
     menuLayout->addWidget(btnHard, 0, Qt::AlignCenter);
 
+    QPushButton *btnBot = new QPushButton("Bot1 vs Bot2");
+    btnBot->setFixedSize(200, 50);
+    menuLayout->addWidget(btnBot, 0, Qt::AlignCenter);
+
     QPushButton *btnExit = new QPushButton("Выход");
     btnExit->setFixedSize(200, 50);
     menuLayout->addWidget(btnExit, 0, Qt::AlignCenter);
@@ -45,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(btnLocal, &QPushButton::clicked, this, &MainWindow::startLocalGame);
     connect(btnMedium, &QPushButton::clicked, this, &MainWindow::startBot1Game);
     connect(btnHard, &QPushButton::clicked, this, &MainWindow::startBot2Game);
+    connect(btnBot, &QPushButton::clicked, this, &MainWindow::startBotVsBotGame);
 
     m_gameWidget = new GameWidget;
     connect(m_gameWidget, &GameWidget::escapePressed, this, &MainWindow::returnToMenu);
@@ -97,6 +102,12 @@ void MainWindow::startBot2Game()
     if (!ok) return;
     int playerColor = (choice == "Белые") ? 0 : 1;
     m_gameWidget->newGame(2, playerColor);
+    m_stackedWidget->setCurrentWidget(m_gameWidget);
+    m_gameWidget->setFocus();
+}
+void MainWindow::startBotVsBotGame()
+{
+    m_gameWidget->newGame(3,0);
     m_stackedWidget->setCurrentWidget(m_gameWidget);
     m_gameWidget->setFocus();
 }

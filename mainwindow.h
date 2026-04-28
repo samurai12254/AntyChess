@@ -18,6 +18,7 @@ private slots:
     void startLocalGame();
     void startBot0Game();
     void startBot1Game();
+    void startBot2Game();
     void returnToMenu();
 private:
     QStackedWidget *m_stackedWidget;

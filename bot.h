@@ -25,5 +25,11 @@ public :
     int selectMove(const int board[sz][sz],bool color)override;
     std::pair<int,int> minimax(int max_deep,bool is_mini,bool color_now);
 };
+class bot2: public bot{
+public:
+    bot2() = default;
+    int selectMove(const int board[sz][sz],bool color)override;
+    std::pair<int,int> minimax(int max_deep,bool is_mini,bool color_now,int alpha,int beta);
+};
 
 #endif // BOT_H

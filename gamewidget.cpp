@@ -189,6 +189,27 @@ void GameWidget::SimulGame(){
         ColorNow = !ColorNow;
         m_boardView ->updateBoard();
         checkGameOver();
+    }else{
+        int codeMove = Bot2.selectMove(board,ColorNow);
+        if(codeMove == -1){
+            checkGameOver();
+            return;
+        }
+        Move move = decodeMove(codeMove);
+        board[move[2]][move[3]] = board[move[0]][move[1]];
+        board[move[0]][move[1]] = EMPTY;
+        if(ColorNow == 0){
+            if(board[move[2]][move[3]] == WPAWN && move[2] == 0){
+                board[move[2]][move[3]] = WPAWN + dist(1,5)(rng);
+            }
+        }else{
+            if(board[move[2]][move[3]] == BPAWN && move[2] == 7){
+                board[move[2]][move[3]] = BPAWN + dist(1,5)(rng);
+            }
+        }
+        ColorNow = !ColorNow;
+        m_boardView ->updateBoard();
+        checkGameOver();
     }
 }
 int GameWidget::promotePawn(){

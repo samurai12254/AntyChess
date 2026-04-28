@@ -109,3 +109,73 @@ pair<int,int> bot1::minimax(int max_deep,bool is_mini,bool color_now){
 
     return {best_move,result};
 }
+
+int bot2::selectMove(const int board[sz][sz],bool color){
+    for(int i = 0;i < sz;i++){
+        for(int j = 0;j < sz;j++){
+            localBoard[i][j] = board[i][j];
+        }
+    }
+    return minimax(MAXDEEP + 1,0,color,-INF,INF).first;
+}
+pair<int,int> bot2::minimax(int max_deep,bool is_mini,bool color_now,int alpha,int beta){
+    if(max_deep == 0){
+        return {-1,heuristicV1()};
+    }
+
+    vector <int> moves;
+
+    if(color_now == 0){
+        moves = GenerateWMoves(localBoard);
+    }else{
+        moves = GenerateBMoves(localBoard);
+    }
+
+    if(moves.empty()){
+        return {-1, heuristicV1()};
+    }
+
+    int result;
+
+    if(is_mini){
+        result = INF;
+    }else{
+        result = -INF;
+    }
+
+    int best_move = -1;
+    int pred1,pred2;
+    pair<int,int> tmp;
+
+    for(auto el : moves){
+        Move move = decodeMove(el);
+
+        pred1 = localBoard[move[0]][move[1]];
+        pred2 = localBoard[move[2]][move[3]];
+
+        localBoard[move[2]][move[3]] = localBoard[move[0]][move[1]];
+        localBoard[move[0]][move[1]] = EMPTY;
+
+        tmp = minimax(max_deep-1,!is_mini,!color_now,alpha,beta);
+
+        if(is_mini){
+            if(best_move == -1 || tmp.second < result){
+                best_move = el;
+                result = tmp.second;
+            }
+            beta = min(beta,tmp.second);
+        }else{
+            if(best_move == -1 || tmp.second > result){
+                best_move = el;
+                result = tmp.second;
+            }
+            alpha = max(alpha,tmp.second);
+        }
+
+        localBoard[move[0]][move[1]] = pred1;
+        localBoard[move[2]][move[3]] = pred2;
+        if(alpha >= beta)break;
+    }
+
+    return {best_move,result};
+}

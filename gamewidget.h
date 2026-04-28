@@ -26,6 +26,7 @@ private:
     int type_game;
     bot0 Bot0;
     bot1 Bot1;
+    bot2 Bot2;
     bool tryMakeMove(int fromRow, int fromCol, int toRow, int toCol);
     void switchTurn();
     void checkGameOver();

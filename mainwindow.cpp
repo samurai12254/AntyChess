@@ -33,6 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
     btnMedium->setFixedSize(200, 50);
     menuLayout->addWidget(btnMedium, 0, Qt::AlignCenter);
 
+    QPushButton *btnHard = new QPushButton("Игра с ботом уровня 2");
+    btnHard->setFixedSize(200, 50);
+    menuLayout->addWidget(btnHard, 0, Qt::AlignCenter);
+
     QPushButton *btnExit = new QPushButton("Выход");
     btnExit->setFixedSize(200, 50);
     menuLayout->addWidget(btnExit, 0, Qt::AlignCenter);
@@ -40,8 +44,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(btnRandom, &QPushButton::clicked, this, &MainWindow::startBot0Game);
     connect(btnLocal, &QPushButton::clicked, this, &MainWindow::startLocalGame);
     connect(btnMedium, &QPushButton::clicked, this, &MainWindow::startBot1Game);
+    connect(btnHard, &QPushButton::clicked, this, &MainWindow::startBot2Game);
 
-    // Игровой виджет
     m_gameWidget = new GameWidget;
     connect(m_gameWidget, &GameWidget::escapePressed, this, &MainWindow::returnToMenu);
 
@@ -58,7 +62,6 @@ void MainWindow::startLocalGame()
 {
     m_gameWidget->newGame();
     m_stackedWidget->setCurrentWidget(m_gameWidget);
-    // Передаём фокус игровому виджету, чтобы он сразу ловил клавиши
     m_gameWidget->setFocus();
 }
 void MainWindow::startBot0Game()
@@ -85,9 +88,20 @@ void MainWindow::startBot1Game()
     m_stackedWidget->setCurrentWidget(m_gameWidget);
     m_gameWidget->setFocus();
 }
+void MainWindow::startBot2Game()
+{
+    QStringList colors = {"Белые", "Чёрные"};
+    bool ok;
+    QString choice = QInputDialog::getItem(this, "Выбор цвета",
+                                           "Играть за:", colors, 0, false, &ok);
+    if (!ok) return;
+    int playerColor = (choice == "Белые") ? 0 : 1;
+    m_gameWidget->newGame(2, playerColor);
+    m_stackedWidget->setCurrentWidget(m_gameWidget);
+    m_gameWidget->setFocus();
+}
 void MainWindow::returnToMenu()
 {
     m_stackedWidget->setCurrentWidget(m_menuWidget);
-    // Если хочешь сбрасывать игру при возврате, раскомментируй:
     // m_gameWidget->newGame();
 }
